@@ -11,10 +11,11 @@
 #include <string>
 
 #include "CoarseSkipList.h"
+#include "Log.h"
+#include "LogFile.h"
 #include "OptimisticSkipList.h"
 #include "SkipList.h"
 #include "util.h"
-
 class EventLoop;
 
 //注意public继承

@@ -58,7 +58,7 @@ void Epoller::epollMod(std::shared_ptr<Channel> channel) {
 }
 
 std::vector<std::shared_ptr<Channel>> Epoller::epoll() {
-    LOG << "++ in thread" << gettid_() << " epoll\n";
+    // LOG << "++ in thread" << gettid_() << " epoll\n";
     int event_count =
         epoll_wait(epoll_fd_, &*events_.begin(), events_.size(), -1);
     // std::cout << "end epoll: eventcount-" << event_count << '\n';

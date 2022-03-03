@@ -70,6 +70,7 @@ OptimisticSkipList<K, V>::OptimisticSkipList(int max_level) {
     K k;
     V v;
     head_ = new Node<K, V>(k, v, max_level_ + 1);
+    std::cout << "OptimisticSkipList" << '\n';
 };
 
 template <typename K, typename V>

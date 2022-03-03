@@ -9,7 +9,7 @@
 #include "EventLoopThread.h"
 #include "OptimisticSkipList.h"
 #include "SkipList.h"
-#define OP 0
+#define OP 1
 
 class Server {
 public:

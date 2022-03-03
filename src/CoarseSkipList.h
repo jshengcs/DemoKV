@@ -89,6 +89,7 @@ CoarseSkipList<K, V>::CoarseSkipList(int max_level) {
     K k;
     V v;
     head_ = new ListNode<K, V>(k, v, max_level_ + 1);
+    std::cout << "CoarseSkipList" << '\n';
 };
 
 template <typename K, typename V>

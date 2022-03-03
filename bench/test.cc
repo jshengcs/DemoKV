@@ -15,26 +15,32 @@
 #include "iostream"
 #include "socket.cc"
 using namespace std;
-int clients = 50;
+int clients = 100;
 const char* host = "127.0.0.1";
 int port = 4444;
 int mypipe[2];
 
 void benchcore();
-int putbench(vector<string>& cmds);
-int total = 500000 / clients;
-int ran = 10000000;
+int putbench(char** cmds);
+int total = 1000000 / clients;
+int ran = 50000000;
 
 int main() {
     pid_t pid;
     FILE* f;
     int ret = -1;
 
-    vector<string> cmds(ran);
+    // vector<string> cmds(ran);
+    char** cmds = new char*[ran];
     for (int i = 0; i < ran; i++) {
-        cmds[i] = "1\r\np:" + to_string(i) + ".mydatamydatavalue\r\n\0";
+        char* str = new char[125];
+        memset(str, 0, 128);
+        strcat(str,
+               ("1\r\np:" + to_string(i) + ".mydatamydatavalue\r\n\0").c_str());
+        cmds[i] = str;
+        // cmds[i] = "1\r\np:" + to_string(i) + ".mydatamydatavalue\r\n\0";
     }
-    cout << cmds.size() << '\n';
+    // cout << cmds.size() << '\n';
 
     int status = 0;
     if (pipe(mypipe)) {
@@ -68,8 +74,8 @@ int main() {
         /* fprintf(stderr,"Child - %d %d\n",speed,failed); */
         fprintf(f, "%lf %d\n", elapsed.count(), suc);
         fclose(f);
-        cout << "In child time-----: " << elapsed.count()
-             << "   success:" << suc << "/total:" << total << '\n';
+        // cout << "In child time-----: " << elapsed.count()
+        //      << "   success:" << suc << "/total:" << total << '\n';
 
         return 0;
     } else {
@@ -117,7 +123,7 @@ int main() {
     return 0;
 }
 
-int putbench(vector<string>& cmds) {
+int putbench(char** cmds) {
     // char req[1024];
     char buf[1024];
     int s = Socket(host, port);
@@ -126,13 +132,13 @@ int putbench(vector<string>& cmds) {
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0, ran - total - 1);  //
     int start = dis(gen);
-    cout << start << '\n';
+    // cout << start << '\n';
     for (int i = start; i < total + start; i++) {
         // cout << "write::" << i << "--" << req;
         //   usleep(300000);
-        // cout << cmds[i].c_str() << '\n';
-        int rlen = strlen(cmds[i].c_str());
-        if (rlen != write(s, cmds[i].c_str(), rlen)) {
+        // cout << cmds[i] << '\n';
+        int rlen = strlen(cmds[i]);
+        if (rlen != write(s, cmds[i], rlen)) {
             // cout << "write failed" << req << "\n";
             close(s);
         }
@@ -146,68 +152,10 @@ int putbench(vector<string>& cmds) {
         // cout << "read"
         //      << "----" << buf << "----\n";
     }
-    // cout << "success:" << succcnt << "/total:" << total << '\n';
-    // cout << "close s" << '\n';
+    // cout << "start: " << start << "/ end: " << total + start;
+    //  cout << "success:" << succcnt << "/total:" << total << '\n';
+    //  cout << "close s" << '\n';
     close(s);
 
     return succcnt;
 }
-
-/*void benchcore() {
-    char req[1024];
-    char buf[1024];
-
-nexttry:
-    for (int i = 0; i < 10; i++) {
-        int s = Socket(host, port);
-        if (s < 0) continue;
-
-        for (int j = 0; j < 1000; j++) {
-            req[0] = 0;
-
-            strcat(req, "1\r\n");
-            char key[10];
-            int oper = rand() % 10;
-            if (oper < 6) {
-                strcat(req, "s:");
-                // itoa(rand() % 10000, key, 10);
-                snprintf(key, 10, "%d\n", rand() % 10000);
-                strcat(req, key);
-                strcat(req, "\r\n\0");
-            } else if (oper < 9) {
-                strcat(req, "p:");
-                // itoa(rand() % 10000, key, 10);
-                snprintf(key, 10, "%d\n", rand() % 10000);
-                strcat(req, key);
-                strcat(req, ".");
-                strcat(req, "aaaaaaaaa");
-                strcat(req, "\r\n\0");
-            } else {
-                strcat(req, "d:");
-                // itoa(rand() % 10000, key, 10);
-                snprintf(key, 10, "%d\n", rand() % 10000);
-                strcat(req, key);
-                strcat(req, "\r\n\0");
-            }
-
-            cout << "write" << i << "\n" << req;
-            usleep(300000);
-            int rlen = strlen(req);
-            if (rlen != write(s, req, rlen)) {
-                cout << "write failed" << req << "\n";
-                close(s);
-                goto nexttry;
-            }
-            i = read(s, buf, 1500);
-            if (i < 0) {
-                close(s);
-                goto nexttry;
-            }
-            buf[i] = 0;
-
-            cout << "read"
-                 << "----" << buf << "----\n";
-        }
-        close(s);
-    }
-}*/

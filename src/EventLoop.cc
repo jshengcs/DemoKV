@@ -39,8 +39,8 @@ void EventLoop::loop() {
     assert(!looping_);
     //避免其他线程调用
     assert(isInLoopThread());
-    LOG << "++ in thread" << gettid_() << " eventloop loop\n";
-    // looping_ = true;
+    // LOG << "++ in thread" << gettid_() << " eventloop loop\n";
+    //  looping_ = true;
     quit_ = false;
     std::vector<std::shared_ptr<Channel>> active_channels;
     while (!quit_) {

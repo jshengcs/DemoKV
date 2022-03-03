@@ -25,7 +25,7 @@ Channel::~Channel() {
 }
 
 void Channel::handleEvents() {
-    // std::cout << " handle events: " << fd_ << '\n';
+    // LOG << "++ in thread" << gettid_() << "handleEvents\n";
     if (revents_ & EPOLLIN) {
         // std::cout << " handle read events: " << fd_ << '\n';
         read_handle_();
@@ -54,8 +54,9 @@ void Channel::setWriteHandle(CallBack&& write_handle) {
 }
 
 void Channel::defaultReadHandle() {
-    // char buf[max_buf_len_ + 1];
-    //  buf[max_buf_len_] = 0;
+    // LOG << "++ in thread" << gettid_() << "defaultReadHandle\n";
+    //  char buf[max_buf_len_ + 1];
+    //   buf[max_buf_len_] = 0;
     int read_len_ = readn(fd_, read_buf_, max_buf_len_);
     read_buf_[read_len_] = 0;
     if (read_len_ > 0) {
@@ -63,6 +64,7 @@ void Channel::defaultReadHandle() {
         //           << read_buf_ << "\n";
         //   defaultWriteHandle();
         requestHandle();
+        defaultWriteHandle();
     } else if (read_len_ == 0) {
         std::shared_ptr<Channel> this_channel = shared_from_this();
         loop_->removeFromEpoller(this_channel);
@@ -70,7 +72,7 @@ void Channel::defaultReadHandle() {
 }
 
 void Channel::defaultWriteHandle() {
-    // char write_buf_[max_buf_len_ + 1] = "sfsffsff";
+    // LOG << "++ in thread" << gettid_() << "defaultWriteHandle\n";
     write_buf_[max_buf_len_ - 1] = 0;
     int write_len_ = writen(fd_, write_buf_, max_buf_len_);
     if (write_len_ > 0) {
@@ -80,6 +82,8 @@ void Channel::defaultWriteHandle() {
 }
 
 void Channel::requestHandle() {
+    LOG << "++ in thread" << gettid_() << "requestHandle  " << read_buf_
+        << "\n";
     int index = 0;
     int cnt = 0;
     while (read_buf_[index] != 0 && read_buf_[index] != '\r') {

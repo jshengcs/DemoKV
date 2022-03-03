@@ -8,7 +8,7 @@
 #include "Server.h"
 
 int main(int argc, char *argv[]) {
-    int thread_num = 4;
+    int thread_num = 0;
     int port = 4444;
 
     int opt;
@@ -39,3 +39,13 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 // std::cout << "Hello, world!\n"; }
+
+/*
+1+4
+ 36.5707
+  28.1677
+
+1
+59.1296
+58.3384
+*/

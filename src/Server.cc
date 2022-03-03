@@ -70,7 +70,7 @@ void Server::newConnHandler() {
         // setSocketNodelay(new_conn_fd);
         std::shared_ptr<Channel> newConn =
             std::make_shared<Channel>(next_loop, new_conn_fd, skip_list_);
-        newConn->setEvents(EPOLLIN | EPOLLOUT | EPOLLET);
+        newConn->setEvents(EPOLLIN | EPOLLET);
         next_loop->addToEpoller(newConn);
     }
 }
