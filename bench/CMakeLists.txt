@@ -1,0 +1,10 @@
+project(Bench)
+include_directories(../src)
+set(CMAKE_CXX_FLAGS "-Wall -g -std=c++17")
+#add_executable(bench bench.cc SkipList.h OptimisticSkipList.h)
+add_executable(bench.out bench.cc)
+add_executable(client.out client.cc)
+add_executable(test.out test.cc)
+
+FIND_PACKAGE(Threads)
+TARGET_LINK_LIBRARIES(bench.out ${CMAKE_THREAD_LIBS_INIT})
