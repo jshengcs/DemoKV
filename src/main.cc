@@ -1,4 +1,6 @@
 #include <getopt.h>
+#include <gperftools/profiler.h>
+#include <signal.h>
 
 #include <iostream>
 
@@ -6,6 +8,22 @@
 #include "Log.h"
 #include "LogFile.h"
 #include "Server.h"
+
+void setGperfStatus(int signum) {
+    static bool is_open = false;
+    if (signum != SIGUSR1) {
+        return;
+    }
+    if (!is_open) {  // start
+        is_open = true;
+        ProfilerStart("test.prof");
+        std::cout << "ProfilerStart success" << std::endl;
+    } else {  // stop
+        is_open = false;
+        ProfilerStop();
+        std::cout << "ProfilrerStop success" << std::endl;
+    }
+}
 
 int main(int argc, char *argv[]) {
     int thread_num = 0;
@@ -27,6 +45,8 @@ int main(int argc, char *argv[]) {
                 break;
         }
     }
+    signal(SIGUSR1, setGperfStatus);
+    // ProfilerStart("test.prof");
 
     LogFile log_file("/mnt/e/Work/DemoKV/ServerLog.txt");
     log_file.Start_Log();
@@ -35,6 +55,8 @@ int main(int argc, char *argv[]) {
     // EventLoop base_loop;
     Server kvServer(thread_num, port);
     kvServer.start();
+
+    // ProfilerStop();
 
     return 0;
 }

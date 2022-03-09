@@ -13,4 +13,4 @@ add_executable(main.out ${SRCS})
 
 
 FIND_PACKAGE(Threads)
-TARGET_LINK_LIBRARIES(main.out ${CMAKE_THREAD_LIBS_INIT})
+TARGET_LINK_LIBRARIES(main.out ${CMAKE_THREAD_LIBS_INIT} "profiler")

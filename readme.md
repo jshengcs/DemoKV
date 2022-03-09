@@ -1,7 +1,8 @@
+## 多线程key-value存储服务
 ### 技术
 > 使用skiplist的简单kv store  
 > 使用Reactor模式 主reactor+从reactor  
-> 并发控制参考 [A Simple Optimistic Skiplist Algorithm](https://link.springer.com/chapter/10.1007/978-3-540-72951-8_11)  
+> 乐观并发控制，参考 [A Simple Optimistic Skiplist Algorithm](https://link.springer.com/chapter/10.1007/978-3-540-72951-8_11)  
 ### 待优化
 > mit6.824,加入raft  
 > 服务端错误数据处理  
